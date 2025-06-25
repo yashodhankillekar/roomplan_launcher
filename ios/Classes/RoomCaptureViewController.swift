@@ -93,18 +93,31 @@ import Flutter
     private func startSession() {
         isScanning = true
         roomCaptureView.captureSession.run(configuration: roomCaptureSessionConfig)
+        
         // Hide Finish button
         finishButton.isHidden = true
         finishButton.alpha = 0.0
+
+        // Show Done button again (in case it was hidden before)
+        doneButton.isHidden = false
+        doneButton.alpha = 1.0
     }
 
     private func stopSession() {
         isScanning = false
         roomCaptureView.captureSession.stop()
+
         // Show Finish button
         finishButton.isHidden = false
         UIView.animate(withDuration: 0.3) {
             self.finishButton.alpha = 1.0
+        }
+
+        // Hide Done button
+        UIView.animate(withDuration: 0.3) {
+            self.doneButton.alpha = 0.0
+        } completion: { _ in
+            self.doneButton.isHidden = true
         }
     }
 

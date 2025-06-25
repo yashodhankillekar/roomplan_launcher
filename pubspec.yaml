@@ -1,6 +1,6 @@
 name: roomplan_launcher
-description: "A new Flutter plugin project."
-version: 0.0.1
+description: "A Flutter wrapper"
+version: 1.0.0
 homepage:
 
 environment:
