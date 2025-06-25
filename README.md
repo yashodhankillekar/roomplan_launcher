@@ -21,7 +21,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  roomplan_launcher: ^0.0.1
+  roomplan_launcher: ^1.0.0
 ```
 
 ### 2. iOS Setup
