@@ -13,6 +13,7 @@ public class RoomplanLauncherPlugin: NSObject, FlutterPlugin {
       DispatchQueue.main.async {
         let rootVC = UIApplication.shared.delegate?.window??.rootViewController
         let roomVC = RoomCaptureViewController()
+        roomVC.modalPresentationStyle = .fullScreen
         rootVC?.present(roomVC, animated: true, completion: nil)
       }
       result(nil)

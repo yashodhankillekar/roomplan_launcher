@@ -1,5 +1,6 @@
 import UIKit
 import RoomPlan
+import Flutter
 
 @objc public class RoomCaptureViewController: UIViewController, RoomCaptureViewDelegate, RoomCaptureSessionDelegate {
 
@@ -8,7 +9,7 @@ import RoomPlan
     private var roomCaptureSessionConfig = RoomCaptureSession.Configuration()
     private var finalResults: CapturedRoom?
 
-    private let exportButton = UIButton(type: .system)
+    private let finishButton = UIButton(type: .system)
     private let activityIndicator = UIActivityIndicatorView(style: .large)
     private let cancelButton = UIButton(type: .system)
     private let doneButton = UIButton(type: .system)
@@ -23,21 +24,23 @@ import RoomPlan
     private func setupUI() {
         view.backgroundColor = .white
 
-        // Configure Export Button
-        exportButton.setTitle("Export", for: .normal)
-        exportButton.isEnabled = false
-        exportButton.addTarget(self, action: #selector(exportResults), for: .touchUpInside)
+        // Configure Finish Button
+        finishButton.setTitle("Finish", for: .normal)
+        finishButton.isEnabled = false
+        finishButton.backgroundColor = UIColor.systemBlue
+        finishButton.setTitleColor(.white, for: .normal)
+        finishButton.layer.cornerRadius = 12
+        finishButton.addTarget(self, action: #selector(finishAndReturnResult), for: .touchUpInside)
 
-        // Configure Cancel Button
+        // Configure Cancel and Done Buttons
         cancelButton.setTitle("Cancel", for: .normal)
         cancelButton.addTarget(self, action: #selector(cancelScanning), for: .touchUpInside)
 
-        // Configure Done Button
         doneButton.setTitle("Done", for: .normal)
         doneButton.addTarget(self, action: #selector(doneScanning), for: .touchUpInside)
 
         // Add subviews
-        [exportButton, cancelButton, doneButton, activityIndicator].forEach {
+        [finishButton, cancelButton, doneButton, activityIndicator].forEach {
             $0.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview($0)
         }
@@ -50,8 +53,10 @@ import RoomPlan
             doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             doneButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
 
-            exportButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            exportButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
+            finishButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            finishButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
+            finishButton.widthAnchor.constraint(equalToConstant: 120),
+            finishButton.heightAnchor.constraint(equalToConstant: 44),
 
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
@@ -99,7 +104,7 @@ import RoomPlan
 
     public func captureView(didPresent processedResult: CapturedRoom, error: Error?) {
         finalResults = processedResult
-        exportButton.isEnabled = true
+        finishButton.isEnabled = true
         activityIndicator.stopAnimating()
     }
 
@@ -109,7 +114,7 @@ import RoomPlan
         } else {
             cancelScanning()
         }
-        exportButton.isEnabled = false
+        finishButton.isEnabled = false
         activityIndicator.startAnimating()
     }
 
@@ -117,26 +122,26 @@ import RoomPlan
         self.dismiss(animated: true)
     }
 
-    @objc private func exportResults() {
-        guard let finalResults = finalResults else { return }
-
-        let destinationFolderURL = FileManager.default.temporaryDirectory.appendingPathComponent("Export")
-        let destinationURL = destinationFolderURL.appendingPathComponent("Room.usdz")
-        let capturedRoomURL = destinationFolderURL.appendingPathComponent("Room.json")
+    @objc private func finishAndReturnResult() {
+        guard let finalResults = finalResults else {
+            self.dismiss(animated: true)
+            return
+        }
 
         do {
-            try FileManager.default.createDirectory(at: destinationFolderURL, withIntermediateDirectories: true)
             let jsonEncoder = JSONEncoder()
             let jsonData = try jsonEncoder.encode(finalResults)
-            try jsonData.write(to: capturedRoomURL)
-            try finalResults.export(to: destinationURL, exportOptions: .parametric)
-
-            let activityVC = UIActivityViewController(activityItems: [destinationFolderURL], applicationActivities: nil)
-            activityVC.modalPresentationStyle = .popover
-            activityVC.popoverPresentationController?.sourceView = exportButton
-            present(activityVC, animated: true)
+            if let jsonString = String(data: jsonData, encoding: .utf8) {
+                // Send data to Flutter via MethodChannel
+                if let controller = UIApplication.shared.delegate?.window??.rootViewController as? FlutterViewController {
+                    let channel = FlutterMethodChannel(name: "roomplan_launcher", binaryMessenger: controller.binaryMessenger)
+                    channel.invokeMethod("onRoomCaptureFinished", arguments: jsonString)
+                }
+            }
         } catch {
-            print("Export error: \\(error)")
+            print("Failed to encode finalResults: \\(error)")
         }
+
+        self.dismiss(animated: true)
     }
 }
