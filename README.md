@@ -13,12 +13,6 @@ A Flutter plugin to launch the native **iOS RoomPlan** scanner using **ARKit** a
 
 ---
 
-## 📸 Demo
-
-<img src="https://developer.apple.com/roomplan/images/roomplan-hero.png" width="100%">
-
----
-
 ## 🚀 Getting Started
 
 ### 1. Install the plugin
@@ -42,6 +36,7 @@ Ensure your iOS project meets the following requirements:
   <key>NSCameraUsageDescription</key>
   <string>Room scanning requires camera access</string>
 ```
+---
 
 ## 🧠 Usage
 
@@ -60,20 +55,23 @@ Use the 'launch' method to invoke the native scanning screen and use the 'onRoom
 ```dart
 ElevatedButton(onPressed: RoomplanLauncher.launch, child: Text("Launch RoomPlan"))
 ```
-
+---
 ## 📂 Output Format
 
 The returned String is a JSON-encoded representation of Apple's CapturedRoom object.
 
+---
+
 ## 🔧 Example App
 Check the example/ directory for a full integration demo.
+
+---
 
 ## ❗ Requirements
 - iOS 16.0+
 - ARKit-compatible device (e.g., iPhone 12+ or recent iPad Pro)
 
-## 📄 License
-MIT License
+---
 
 ## 🙏 Credits
 Built on top of Apple’s [RoomPlan SDK](https://developer.apple.com/documentation/roomplan).
