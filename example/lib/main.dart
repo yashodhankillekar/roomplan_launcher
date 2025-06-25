@@ -15,6 +15,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
+    RoomplanLauncher.onRoomCaptureFinished = (json) {
+      //Do something with the JSON here
+      print(json);
+    };
     super.initState();
   }
 
