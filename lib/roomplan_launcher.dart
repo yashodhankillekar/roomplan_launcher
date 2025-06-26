@@ -1,19 +1,16 @@
-import 'package:flutter/services.dart';
+import 'package:roomplan_launcher/roomplan_launcher_platform_interface.dart';
+import 'package:roomplan_launcher/types.dart';
 
-class RoomplanLauncher {
-  static const MethodChannel _channel = MethodChannel('in.yashodhankillekar/roomplan_launcher');
+Future<void> launchRoomplan() async {
+  await RoomplanLauncherPlatform.instance.launch();
+}
 
-  static void Function(String jsonResult)? onRoomCaptureFinished;
+abstract class RoomplanLauncher {
+  static void onRoomCaptureFinished(CaptureFinishedHandler handler) {
+    RoomplanLauncherPlatform.instance.onRoomCaptureFinished(handler);
+  }
 
   static Future<void> launch() async {
-    _channel.setMethodCallHandler((call) async {
-      if (call.method == 'onRoomCaptureFinished') {
-        String jsonResult = call.arguments;
-        // Do something with the JSON
-        onRoomCaptureFinished?.call(jsonResult);
-      }
-    });
-
-    await _channel.invokeMethod('launchRoomPlan');
+    await RoomplanLauncherPlatform.instance.launch();
   }
 }

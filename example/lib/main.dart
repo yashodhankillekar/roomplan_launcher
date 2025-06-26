@@ -15,10 +15,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    RoomplanLauncher.onRoomCaptureFinished = (json) {
+    RoomplanLauncher.onRoomCaptureFinished((resultJson) {
       //Do something with the JSON here
-      print(json);
-    };
+      print(resultJson);
+    });
     super.initState();
   }
 
@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(title: const Text('Plugin example app')),
         body: Center(
-          child: ElevatedButton(onPressed: RoomplanLauncher.launch, child: Text("Launch RoomPlan")),
+          child: ElevatedButton(onPressed: launchRoomplan, child: Text("Launch RoomPlan")),
         ),
       ),
     );
