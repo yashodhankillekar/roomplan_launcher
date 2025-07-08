@@ -31,4 +31,16 @@ abstract class RoomplanLauncherPlatform extends PlatformInterface {
   Future<void> launch() async {
     throw UnimplementedError('launch() has not been implemented.');
   }
+
+  Future<bool> isSupported() {
+    throw UnimplementedError('isSupported() has not been implemented.');
+  }
+
+  Future<String?> usdzResultsPath() {
+    throw UnimplementedError('usdzResultsPath() has not been implemented.');
+  }
+
+  Future<String?> lastUsdzResultFilePath() {
+    throw UnimplementedError('lastUsdzResultFilePath() has not been implemented.');
+  }
 }

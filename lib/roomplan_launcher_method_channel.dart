@@ -29,4 +29,22 @@ class MethodChannelRoomplanLauncher extends RoomplanLauncherPlatform {
   void onRoomCaptureFinished(CaptureFinishedHandler handler) {
     _captureFinishedHandler = handler;
   }
+
+  @override
+  Future<bool> isSupported() async {
+    final bool? result = await methodChannel.invokeMethod<bool>('isSupported');
+    return result ?? false;
+  }
+
+  @override
+  Future<String?> usdzResultsPath() async {
+    final String? result = await methodChannel.invokeMethod<String>('usdzResultsPath');
+    return result;
+  }
+
+  @override
+  Future<String?> lastUsdzResultFilePath() async {
+    final String? result = await methodChannel.invokeMethod<String>('lastUsdzResultFilePath');
+    return result;
+  }
 }

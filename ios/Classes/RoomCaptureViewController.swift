@@ -8,7 +8,7 @@ import Flutter
     private var roomCaptureView: RoomCaptureView!
     private var roomCaptureSessionConfig = RoomCaptureSession.Configuration()
     private var finalResults: CapturedRoom?
-
+    public  var usdzFilePath: String?
     private let finishButton = UIButton(type: .system)
     private let activityIndicator = UIActivityIndicatorView(style: .large)
     private let cancelButton = UIButton(type: .system)
@@ -19,6 +19,13 @@ import Flutter
         setupUI()
         setupRoomCaptureView()
         activityIndicator.stopAnimating()
+    }
+
+    @objc public static func isSupported() -> Bool {
+        if #available(iOS 16.0, *) {
+            return RoomCaptureSession.isSupported
+        }
+        return false
     }
 
     private func setupUI() {
@@ -129,6 +136,29 @@ import Flutter
         finalResults = processedResult
         finishButton.isEnabled = true
         activityIndicator.stopAnimating()
+
+        // Export USDZ file
+        exportToUSDZ()
+    }
+
+    private func exportToUSDZ() {
+        guard let finalResults = finalResults else { return }
+        do {
+            let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            let roomScansFolder = documentsPath.appendingPathComponent("room_scans")
+            
+            // Create the RoomScans directory if it doesn't exist
+            if !FileManager.default.fileExists(atPath: roomScansFolder.path) {
+                try FileManager.default.createDirectory(at: roomScansFolder, withIntermediateDirectories: true)
+            }
+            
+            let fileName = "scan_\(Int(Date().timeIntervalSince1970)).usdz"
+            let fileURL = roomScansFolder.appendingPathComponent(fileName)
+            try finalResults.export(to: fileURL)
+            self.usdzFilePath = fileURL.path
+        } catch {
+            print("Failed to export USDZ file: \(error)")
+        }
     }
 
     @objc private func doneScanning() {
