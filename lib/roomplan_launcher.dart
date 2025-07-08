@@ -15,19 +15,19 @@ abstract class RoomplanLauncher {
   }
 
   //Utility method to check support
-  Future<bool> isSupported() {
+  static Future<bool> isSupported() {
     return RoomplanLauncherPlatform.instance.isSupported();
   }
 
   /// Returns the path of the directory containing the resulted USDZ files.
   /// Returns null if no scan has been completed or if the export failed.
-  Future<String?> usdzResultsPath() {
-    throw UnimplementedError('usdzResultsPath() has not been implemented.');
+  static Future<String?> usdzResultsPath() {
+    return RoomplanLauncherPlatform.instance.usdzResultsPath();
   }
 
   /// Returns the file path of the exported USDZ file from the last room scan.
   /// Returns null if no scan has been completed or if the export failed.
-  Future<String?> lastUsdzResultFilePath() {
+  static Future<String?> lastUsdzResultFilePath() {
     return RoomplanLauncherPlatform.instance.lastUsdzResultFilePath();
   }
 }
