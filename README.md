@@ -10,6 +10,7 @@ A Flutter plugin to launch the native **iOS RoomPlan** scanner using **ARKit** a
 
 - Launches native `RoomCaptureViewController` with full-screen AR scanning.
 - Automatically processes results and returns structured `CapturedRoom` JSON back to Flutter.
+- Save the USDZ model so that it can be exported.
 
 ---
 
