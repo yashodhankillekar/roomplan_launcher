@@ -1,6 +1,6 @@
 name: roomplan_launcher
 description: "A Flutter plugin to launch the native iOS RoomPlan scanner using ARKit. Captures room geometry and returns structured JSON data to Flutter. Requires iOS 16+."
-version: 1.1.0
+version: 1.2.0
 homepage: https://github.com/yashodhankillekar/roomplan_launcher.git
 
 environment:
